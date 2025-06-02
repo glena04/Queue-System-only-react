@@ -1,0 +1,224 @@
+.display-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+.display-header {
+  background-color: #1a1a2e;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.display-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.datetime {
+  text-align: right;
+}
+
+.date {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.time {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.display-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.service-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.service-section {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.service-name {
+  background-color: #16213e;
+  color: white;
+  margin: 0;
+  padding: 1rem 2rem;
+  font-size: 1.8rem;
+}
+
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.ticket-card {
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ticket-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0f3460;
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  padding: 1rem;
+  min-width: 160px;
+}
+
+.ticket-details {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.customer-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.counter-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.counter-name {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.room-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f3460;
+  background-color: #e6f0ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  flex-direction: row;
+}
+
+.no-tickets-message {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.no-tickets-message h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.no-tickets-message p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.display-footer {
+  background-color: #1a1a2e;
+  color: white;
+  padding: 1rem;
+}
+
+.ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  font-size: 1.2rem;
+  padding: 0.5rem 0;
+}
+
+.ticker::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100px;
+  background: linear-gradient(to right, transparent, #1a1a2e);
+}
+
+/* Add marquee animation for the ticker message */
+@keyframes ticker {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.ticker {
+  animation: ticker 30s linear infinite;
+}
+
+@media (max-width: 992px) {
+  .tickets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .display-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .datetime {
+    text-align: center;
+  }
+  
+  .ticket-card {
+    flex-direction: column;
+  }
+  
+  .ticket-number {
+    width: 100%;
+    min-width: auto;
+  }
+}
