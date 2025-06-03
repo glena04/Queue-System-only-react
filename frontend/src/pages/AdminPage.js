@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useQueue } from '../context/QueueContext';
 import '../styles/AdminPage.css';
-
+import SocketDebugger from '../components/SocketDebugger';
 const AdminPage = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { 
@@ -192,6 +192,7 @@ const AdminPage = () => {
   
   return (
     <div className="admin-page">
+    <SocketDebugger /> {/* Add this line */}
       <header className="admin-header">
         <h1>Admin Dashboard</h1>
         <div className="admin-info">

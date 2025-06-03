@@ -19,7 +19,6 @@ const countersRoutes = require('./routes/counters');
 const queueRoutes = require('./routes/queue');
 const statisticsRoutes = require('./routes/statistics');
 
-app.set('io', io);
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +31,7 @@ const io = new Server(server, {
   }
 });
 
+// 🔥 NEW: Store io instance on app for access in routes
 app.set('io', io);
 
 // Initialize database
@@ -45,8 +45,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
-// Setup Socket.io connection handler
-require('./socket')(io);
+// 🔥 NEW: Setup Socket.io connection handler and store the broadcast functions
+const socketHandlers = require('./socket')(io);
+app.set('socketHandlers', socketHandlers);
 
 // Routes
 app.use('/api/auth', authRoutes);

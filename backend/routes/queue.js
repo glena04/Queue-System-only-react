@@ -186,10 +186,11 @@ router.post('/virtual-ticket', auth, async (req, res) => {
       WHERE t.id = ?
     `, [ticketId]);
     
-    // Broadcast queue update to all clients
-    const io = req.app.get('io');
-    if (io && socketModule(io).broadcastQueueUpdate) {
-      socketModule(io).broadcastQueueUpdate();
+     // 🔥 NEW: Broadcast queue update to all clients
+    const socketHandlers = req.app.get('socketHandlers');
+    if (socketHandlers && socketHandlers.broadcastQueueUpdate) {
+      await socketHandlers.broadcastQueueUpdate();
+      console.log('✅ Broadcasted queue update after virtual ticket creation');
     }
     
     res.status(201).json(mapTicketToCamelCase(ticket));
@@ -235,11 +236,12 @@ router.patch('/tickets/:id/present', auth, async (req, res) => {
       WHERE t.id = ?
     `, [req.params.id]);
     
-    // Broadcast queue update to all clients
-    const io = req.app.get('io');
-    if (io && socketModule(io).broadcastQueueUpdate) {
-      socketModule(io).broadcastQueueUpdate();
-    }
+// Broadcast queue update to all clients  <-- ADD THESE LINES
+const socketHandlers = req.app.get('socketHandlers');
+if (socketHandlers && socketHandlers.broadcastQueueUpdate) {
+  await socketHandlers.broadcastQueueUpdate();
+  console.log('✅ Broadcasted queue update after marking ticket as present');
+}
     
     res.json(mapTicketToCamelCase(updatedTicket));
   } catch (err) {

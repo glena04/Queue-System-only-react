@@ -5,9 +5,6 @@ const { check, validationResult } = require('express-validator');
 const { dbGet, dbAll, dbRun } = require('../config/database');
 const { auth } = require('./auth');
 
-// Import socket module
-const socketModule = require('../socket');
-
 // @route   GET /api/services
 // @desc    Get all services
 // @access  Public
@@ -79,10 +76,13 @@ router.post('/', [
     // Get the created service
     const service = await dbGet('SELECT * FROM services WHERE id = ?', [serviceId]);
     
-    // Broadcast service update to all clients
-    const io = req.app.get('io');
-    if (io && socketModule(io).broadcastServiceUpdate) {
-      socketModule(io).broadcastServiceUpdate();
+    // 🔥 NEW: Broadcast service update to all clients
+    const socketHandlers = req.app.get('socketHandlers');
+    if (socketHandlers && socketHandlers.broadcastServiceUpdate) {
+      await socketHandlers.broadcastServiceUpdate();
+      console.log('✅ Broadcasted service update after creation');
+    } else {
+      console.log('❌ Socket handlers not found');
     }
     
     res.status(201).json(service);
@@ -112,13 +112,26 @@ router.delete('/:id', auth, async (req, res) => {
     // Delete service from database
     await dbRun('DELETE FROM services WHERE id = ?', [req.params.id]);
     
-    // Broadcast service update to all clients
-    const io = req.app.get('io');
-    if (io && socketModule(io).broadcastServiceUpdate) {
-      socketModule(io).broadcastServiceUpdate();
+    // 🔥 NEW: Broadcast updates to all clients
+    const socketHandlers = req.app.get('socketHandlers');
+    if (socketHandlers) {
+      if (socketHandlers.broadcastServiceUpdate) {
+        await socketHandlers.broadcastServiceUpdate();
+        console.log('✅ Broadcasted service update after deletion');
+      }
       
-      // Also broadcast queue update as tickets for this service will be deleted
-      socketModule(io).broadcastQueueUpdate();
+      // Also broadcast queue and counter updates as related records were deleted
+      if (socketHandlers.broadcastQueueUpdate) {
+        await socketHandlers.broadcastQueueUpdate();
+        console.log('✅ Broadcasted queue update after service deletion');
+      }
+      
+      if (socketHandlers.broadcastCounterUpdate) {
+        await socketHandlers.broadcastCounterUpdate();
+        console.log('✅ Broadcasted counter update after service deletion');
+      }
+    } else {
+      console.log('❌ Socket handlers not found');
     }
     
     res.json({ message: 'Service deleted' });
