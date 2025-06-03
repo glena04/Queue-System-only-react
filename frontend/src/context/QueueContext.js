@@ -173,13 +173,13 @@ socket.on('queueUpdate', (data) => {
     
     // Find position in queue
     const ticketsAhead = physicalTickets.filter(
-      t => t.serviceId === ticket.serviceId && 
+      t => t.service_id === ticket.service_id && 
       t.createdAt < ticket.createdAt && 
       t.status === 'physical'
     ).length;
     
     // Average time per customer (in minutes)
-    const avgTimePerCustomer = statistics.avgServiceTime?.[ticket.serviceId] || 5;
+    const avgTimePerCustomer = statistics.avgWaitTimeByService?.[ticket.service_id] || 5;
     
     return `${ticketsAhead * avgTimePerCustomer} minutes`;
   };

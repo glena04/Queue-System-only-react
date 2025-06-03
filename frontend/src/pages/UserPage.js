@@ -8,6 +8,7 @@ const UserPage = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { 
     services, 
+    counters,        // ← Add this line
     userTicket, 
     virtualTickets,
     physicalTickets,
@@ -89,7 +90,7 @@ const UserPage = () => {
     }
     
     const ticketsAhead = physicalTickets.filter(
-      t => t.serviceId === userTicket.serviceId && 
+      t => t.serviceId === userTicket.service_id && 
       t.createdAt < userTicket.createdAt &&
       t.status === 'physical'
     ).length;
@@ -102,27 +103,43 @@ const UserPage = () => {
     if (!userTicket || userTicket.status === 'virtual') return 'N/A';
     
     return physicalTickets.filter(
-      t => t.serviceId === userTicket.serviceId && 
+      t => t.serviceId === userTicket.service_id && 
       t.createdAt < userTicket.createdAt &&
       t.status === 'physical'
     ).length;
   };
   
-  // Check if user's ticket is being called
-  const isBeingCalled = () => {
-    if (!userTicket) return false;
-    
-    const currentServiceCall = currentServing[userTicket.serviceId];
-    return currentServiceCall && currentServiceCall.id === userTicket.id;
-  };
+// Check if user's ticket is being called
+const isBeingCalled = () => {
+  if (!userTicket) return false;
   
-  // Get the currently called number for user's service
-  const getCurrentlyCalledNumber = () => {
-    if (!userTicket) return 'N/A';
-    
-    const currentServiceCall = currentServing[userTicket.serviceId];
-    return currentServiceCall ? currentServiceCall.ticketNumber : 'None';
-  };
+  // Find counters that serve this user's service
+  const serviceCounters = counters.filter(counter => counter.service_id === userTicket.service_id);
+  
+  // Check if any of those counters are currently serving this user's ticket
+  return serviceCounters.some(counter => {
+    const currentTicket = currentServing[counter.id];
+    return currentTicket && currentTicket.id === userTicket.id;
+  });
+};
+  
+// Get the currently called number for user's service
+const getCurrentlyCalledNumber = () => {
+  if (!userTicket) return 'N/A';
+  
+  // Find counters that serve this user's service
+  const serviceCounters = counters.filter(counter => counter.service_id === userTicket.service_id);
+  
+  // Find the currently called ticket for this service
+  for (const counter of serviceCounters) {
+    const currentTicket = currentServing[counter.id];
+    if (currentTicket) {
+      return currentTicket.ticket_number;
+    }
+  }
+  
+  return 'None';
+};
   
   // Handle logout
   const handleLogout = () => {
@@ -189,11 +206,11 @@ const UserPage = () => {
                 <>
                   <div className="ticket-info">
                     <p>
-                      <strong>Ticket Number:</strong> {userTicket.ticketNumber}
+                      <strong>Ticket Number:</strong> {userTicket.ticket_number}
                     </p>
                     <p>
                       <strong>Service:</strong>{' '}
-                      {services.find(s => s.id === userTicket.serviceId)?.name || 'Unknown'}
+                      {services.find(s => s.id === userTicket.service_id)?.name || 'Unknown'}
                     </p>
                     <p>
                       <strong>Status:</strong>{' '}
