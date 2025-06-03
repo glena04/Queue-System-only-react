@@ -90,7 +90,7 @@ const UserPage = () => {
     }
     
     const ticketsAhead = physicalTickets.filter(
-      t => t.serviceId === userTicket.service_id && 
+      t => t.serviceId === userTicket.serviceId && 
       t.createdAt < userTicket.createdAt &&
       t.status === 'physical'
     ).length;
@@ -103,7 +103,7 @@ const UserPage = () => {
     if (!userTicket || userTicket.status === 'virtual') return 'N/A';
     
     return physicalTickets.filter(
-      t => t.serviceId === userTicket.service_id && 
+      t => t.serviceId === userTicket.serviceId && 
       t.createdAt < userTicket.createdAt &&
       t.status === 'physical'
     ).length;
@@ -198,11 +198,11 @@ const getCurrentlyCalledNumber = () => {
                 <>
                   <div className="ticket-info">
                     <p>
-                      <strong>Ticket Number:</strong> {userTicket.ticket_number}
+                      <strong>Ticket Number:</strong> {userTicket.ticketNumber}
                     </p>
                     <p>
                       <strong>Service:</strong>{' '}
-                      {services.find(s => s.id === userTicket.service_id)?.name || 'Unknown'}
+                      {services.find(s => s.id === userTicket.serviceId)?.name || 'Unknown'}
                     </p>
                     <p>
                       <strong>Status:</strong>{' '}
