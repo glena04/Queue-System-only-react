@@ -19,6 +19,7 @@ const countersRoutes = require('./routes/counters');
 const queueRoutes = require('./routes/queue');
 const statisticsRoutes = require('./routes/statistics');
 
+app.set('io', io);
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
@@ -30,6 +31,8 @@ const io = new Server(server, {
     methods: ['GET', 'POST']
   }
 });
+
+app.set('io', io);
 
 // Initialize database
 initializeDatabase()

@@ -107,7 +107,10 @@ router.get('/user-ticket', auth, async (req, res) => {
       LIMIT 1
     `, [req.user.id]);
     
-    res.json(ticket || null);
+    // Transform to camelCase before sending
+    const transformedTicket = ticket ? mapTicketToCamelCase(ticket) : null;
+    
+    res.json(transformedTicket);
   } catch (err) {
     console.error('Error getting user ticket:', err.message);
     res.status(500).json({ message: 'Server error' });
@@ -189,7 +192,7 @@ router.post('/virtual-ticket', auth, async (req, res) => {
       socketModule(io).broadcastQueueUpdate();
     }
     
-    res.status(201).json(ticket);
+    res.status(201).json(mapTicketToCamelCase(ticket));
   } catch (err) {
     console.error('Error creating virtual ticket:', err.message);
     res.status(500).json({ message: 'Server error' });
@@ -238,7 +241,7 @@ router.patch('/tickets/:id/present', auth, async (req, res) => {
       socketModule(io).broadcastQueueUpdate();
     }
     
-    res.json(updatedTicket);
+    res.json(mapTicketToCamelCase(updatedTicket));
   } catch (err) {
     console.error('Error marking ticket as present:', err.message);
     res.status(500).json({ message: 'Server error' });

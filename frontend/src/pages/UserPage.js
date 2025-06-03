@@ -113,32 +113,24 @@ const UserPage = () => {
 const isBeingCalled = () => {
   if (!userTicket) return false;
   
-  // Find counters that serve this user's service
-  const serviceCounters = counters.filter(counter => counter.service_id === userTicket.service_id);
+  // Check if this user's ticket is currently being served
+  const servingTicket = Object.values(currentServing).find(
+    ticket => ticket && ticket.id === userTicket.id
+  );
   
-  // Check if any of those counters are currently serving this user's ticket
-  return serviceCounters.some(counter => {
-    const currentTicket = currentServing[counter.id];
-    return currentTicket && currentTicket.id === userTicket.id;
-  });
+  return !!servingTicket;
 };
   
 // Get the currently called number for user's service
 const getCurrentlyCalledNumber = () => {
   if (!userTicket) return 'N/A';
   
-  // Find counters that serve this user's service
-  const serviceCounters = counters.filter(counter => counter.service_id === userTicket.service_id);
+  // Find any ticket currently being served for the same service
+  const servingTicket = Object.values(currentServing).find(
+    ticket => ticket && ticket.serviceId === userTicket.serviceId
+  );
   
-  // Find the currently called ticket for this service
-  for (const counter of serviceCounters) {
-    const currentTicket = currentServing[counter.id];
-    if (currentTicket) {
-      return currentTicket.ticket_number;
-    }
-  }
-  
-  return 'None';
+  return servingTicket ? servingTicket.ticketNumber : 'None';
 };
   
   // Handle logout

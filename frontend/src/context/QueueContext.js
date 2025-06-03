@@ -163,26 +163,26 @@ socket.on('queueUpdate', (data) => {
   };
   
   // Get estimated wait time
-  const getEstimatedWaitTime = (ticketId) => {
-    if (!userTicket || !physicalTickets.length) return 'Unknown';
-    
-    const ticket = userTicket.id === ticketId ? userTicket : 
-      [...virtualTickets, ...physicalTickets].find(t => t.id === ticketId);
-    
-    if (!ticket) return 'Unknown';
-    
-    // Find position in queue
-    const ticketsAhead = physicalTickets.filter(
-      t => t.service_id === ticket.service_id && 
-      t.createdAt < ticket.createdAt && 
-      t.status === 'physical'
-    ).length;
-    
-    // Average time per customer (in minutes)
-    const avgTimePerCustomer = statistics.avgWaitTimeByService?.[ticket.service_id] || 5;
-    
-    return `${ticketsAhead * avgTimePerCustomer} minutes`;
-  };
+const getEstimatedWaitTime = (ticketId) => {
+  if (!userTicket || !physicalTickets.length) return 'Unknown';
+  
+  const ticket = userTicket.id === ticketId ? userTicket : 
+    [...virtualTickets, ...physicalTickets].find(t => t.id === ticketId);
+  
+  if (!ticket) return 'Unknown';
+  
+  // Find position in queue
+  const ticketsAhead = physicalTickets.filter(
+    t => t.serviceId === ticket.serviceId && 
+    t.createdAt < ticket.createdAt && 
+    t.status === 'physical'
+  ).length;
+  
+  // Average time per customer (in minutes) - fix the property reference
+  const avgTimePerCustomer = statistics.avgWaitTimeByService?.[ticket.serviceId] || 5;
+  
+  return `${ticketsAhead * avgTimePerCustomer} minutes`;
+};
   
   // Add a new service (admin only)
   const addService = async (serviceName) => {
