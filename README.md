@@ -157,9 +157,15 @@ A full-stack web application for managing virtual and physical queues in service
 - **Display Page**: `http://localhost:3000/display`
 
 ### Default Users (Created on First Run)
+By new empty databse.
 - **Admin**: Email: admin@example.com, Password: admin123
 - **Counter Staff**: Email: counter@example.com, Password: counter123
 - **User**: Register a new account through the application
+By using the exccted database
+- **Admin**: Email: starbahadin@hotmail.com, Password: 123456
+- **Counter Staff**: Email: alan@hotmail.com, Password: 123456
+- **User**: Email:  solaf@hotmail.com, Password: 123456
+- Register a new account for user through the application
 
 ## Real-time Updates
 The system uses WebSockets (Socket.io) for real-time updates across all interfaces. This ensures that all users, counter staff, admins, and display screens have the latest information without needing to refresh the page.
